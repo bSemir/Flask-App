@@ -1,4 +1,5 @@
 from market import db
+from market import bcrypt
 
 
 class User(db.Model):
@@ -9,6 +10,14 @@ class User(db.Model):
     budget = db.Column(db.Integer(), nullable=False, default=1000)
     items = db.relationship('Item', backref='owned_user', lazy=True)
 
+    @property
+    def password(self):
+        return self.password
+
+    @password.setter
+    def password(self, plain_text_password):
+        self.password_hash = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
+
 
 class Item(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
@@ -16,8 +25,9 @@ class Item(db.Model):
     price = db.Column(db.Integer(), nullable=False)
     barcode = db.Column(db.String(length=12), nullable=False, unique=True)
     description = db.Column(db.String(length=1024), nullable=False, unique=True)
-    owner = db.Column(db.Integer(), db.ForeignKey(
-        'user.id'))  # this is related to each unique row that id field has, basically, we can only assign item to user by users id
+    owner = db.Column(db.Integer(), db.ForeignKey('user.id'))
+
+    # this is related to each unique row that id field has, basically, we can only assign item to user by users id
 
     # u owner fieldu ce pisati npr 1, sto znaci uzer koji ima id=1 je owner tog itema
     def __repr__(self):
