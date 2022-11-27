@@ -10,6 +10,8 @@ app.config['SECRET_KEY'] = '589403d8cbe7f71dcce91f08'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+# tell the login_manager where's login route located, this is enough to redirect to /login instead of /market
+login_manager.login_view = "login_page"
 
 from market import routes
 
