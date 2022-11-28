@@ -35,7 +35,7 @@ class LoginForm(FlaskForm):
 
 
 class PurchaseItemForm(FlaskForm):
-    submit = SubmitField(label='Purchase Item!')
+    submit = SubmitField(label='Buy')
 
 
 class SellItemForm(FlaskForm):
