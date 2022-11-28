@@ -1,7 +1,7 @@
 from market import app
 from flask import render_template, redirect, url_for, flash, request
 from market.models import Item, User
-from market.forms import RegisterForm, LoginForm, PurchaseItemForm
+from market.forms import RegisterForm, LoginForm, PurchaseItemForm, SellItemForm
 from market import db
 from flask_login import login_user, logout_user, login_required, current_user
 
@@ -16,8 +16,11 @@ def home_page():
 @login_required  # this decorator executes before market_page function, so it'll automatically take care and redirect our users to login if they are not logged in
 def market_page():
     purchase_form = PurchaseItemForm()
+    selling_form = SellItemForm()
     if request.method == "POST":
-        purchased_item = request.form.get('purchased_item')
+        # Buy item logic
+        purchased_item = request.form.get(
+            'purchased_item')  # reference to an input field named purchased_item(name="purchased_item)
         p_item_object = Item.query.filter_by(name=purchased_item).first()
         if p_item_object:
             if current_user.can_purchase(p_item_object):
@@ -26,12 +29,24 @@ def market_page():
                       category='success')
             else:
                 flash(f"Unfortunately, you don't have enough money to buy {p_item_object.name}!", category='danger')
+        # Sell item logic
+        sold_idem = request.form.get('sold_item')  # item's value
+        s_item_object = Item.query.filter_by(name=sold_idem).first()  # item's object
+        if s_item_object:
+            if current_user.can_sell(s_item_object):
+                s_item_object.sell(current_user)
+                flash(f"Congratulations! You've just sold {s_item_object.name} back to market.",
+                      category='success')
+            else:
+                flash(f"Something went wrong with selling {s_item_object.name}", category='danger')
 
         return redirect(url_for('market_page'))
 
     if request.method == "GET":
-        items = Item.query.filter_by(owner=None)  # the way of displaying not bought yet products
-        return render_template('market.html', items=items, purchase_form=purchase_form)
+        items = Item.query.filter_by(owner=None)  # the way of displaying not yet bought products
+        owned_items = Item.query.filter_by(owner=current_user.id)
+        return render_template('market.html', items=items, purchase_form=purchase_form, owned_items=owned_items,
+                               selling_form=selling_form)
 
 
 @app.route("/register", methods=['GET', 'POST'])

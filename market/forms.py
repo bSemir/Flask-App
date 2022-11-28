@@ -39,4 +39,5 @@ class PurchaseItemForm(FlaskForm):
 
 
 class SellItemForm(FlaskForm):
-    submit = SubmitField(label='Sell Item!')
+    submit = SubmitField(label='Sell')
+    # we'll create instance of it and send it as a context to routes.py

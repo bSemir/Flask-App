@@ -47,7 +47,30 @@ Market Page
     </div>
     <div class="col-4">
         <h2>My items</h2>
-        <p>Click on sell item to put them back in Market</p>
+        <p>Click on sell item to put it back on Market</p>
+        <br>
+        <!--todo: add message if user has no items-->
+        <div class="row">
+            {% for owned_item in owned_items %}
+            <!--import this again for proper access, so each item could activate separate modal-->
+            {% include 'includes/owned_items_modals.html' %}
+            <div class="col-md-6">
+                <div style="margin-bottom: 5px" class="card text-center bg-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ owned_item.name }}</h5>
+                        <!-- this button is responsible for triggering Selling modal-->
+                        <button type="button" class="btn btn-outline-danger" style="margin-bottom: 5px"
+                                data-toggle="modal" data-target="#Modal-SellingConfirm-{{ owned_item.id }}">
+                            Sell this Item
+                        </button>
+                        <p class="card-text"><strong>
+                            Price: {{ owned_item.price }}$
+                        </strong></p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
