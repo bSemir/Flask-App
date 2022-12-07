@@ -21,6 +21,7 @@ Technologies used:
 - Python
 - Flask
 - sqlite3
+- SQLAlchemy (python sql toolkit & ORM)
 - DB browser
 - Bootstrap
 - html/css
